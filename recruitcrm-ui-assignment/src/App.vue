@@ -1,9 +1,12 @@
+// src/App.vue
 <script setup lang="ts">
+import AppHeader from './components/AppHeader.vue';
 import CandidateDetailsView from './views/CandidateDetailsView.vue';
 </script>
 
 <template>
   <div id="app-container">
+    <AppHeader />
     <CandidateDetailsView />
   </div>
 </template>
