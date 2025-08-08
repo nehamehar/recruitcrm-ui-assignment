@@ -1,0 +1,8 @@
+// src/assets/scss/_mixins.scss
+@mixin breakpoint($point) {
+  @if $point == md {
+    @media (max-width: 992px) {
+      @content;
+    }
+  }
+}

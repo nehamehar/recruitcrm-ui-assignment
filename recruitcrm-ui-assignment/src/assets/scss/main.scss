@@ -1,0 +1,11 @@
+// src/assets/scss/main.scss
+@import 'variables';
+@import 'mixins'; // <-- Add this line
+
+// Global base styles
+body {
+  margin: 0;
+  font-family: $font-family-base;
+  background-color: $color-background-light;
+  color: $color-text-primary;
+}
