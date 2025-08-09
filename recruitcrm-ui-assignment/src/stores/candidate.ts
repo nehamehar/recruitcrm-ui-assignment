@@ -17,17 +17,17 @@ export const useCandidateStore = defineStore('candidate', {
   actions: {
     async loadCandidate() {
       this.loading = true
-      this.error = null
       try {
-        const data = await fetchCandidate()
-        this.details = data
-      } catch (err) {
-        this.error = 'Failed to fetch candidate details.'
+        this.details = await fetchCandidate()
+      } catch (e) {
+        this.error = e.message
       } finally {
         this.loading = false
       }
     },
   },
 })
+
+
 
 

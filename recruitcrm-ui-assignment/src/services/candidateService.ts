@@ -1,5 +1,5 @@
 import type { Candidate } from '@/types'
-
+// all mock data we put here
 const mockCandidateData: Candidate = {
   id: 231,
   name: "William Sample",
@@ -20,13 +20,14 @@ const mockCandidateData: Candidate = {
   resume: "Resume",
   salaryType: "Annual",
   totalExperience: "5 Years",
-  languageSkills: "English (Elementary proficiency)"
-};
+  languageSkills: "English (Elementary proficiency)",
+}
 
 export const fetchCandidate = (): Promise<Candidate> => {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(mockCandidateData), 500);
-  });
-};
+    setTimeout(() => resolve(mockCandidateData), 500)
+  })
+}
+
 
 

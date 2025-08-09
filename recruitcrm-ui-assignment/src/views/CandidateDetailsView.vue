@@ -1,59 +1,87 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useCandidateStore } from '@/stores/candidate'
-import CandidateHeader from '@/components/CandidateHeader.vue'
-import CandidateInfoGrid from '@/components/CandidateInfoGrid.vue'
-import NotesPanel from '@/components/NotesPanel.vue'
-import AssignedJobsTable from '@/components/AssignedJobsTable.vue'
+import { ref, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useCandidateStore } from '@/stores/candidate';
 
-const candidateStore = useCandidateStore()
-const { details: candidate, loading } = storeToRefs(candidateStore)
-const activeTab = ref('details')
+import SubHeader from '@/components/SubHeader.vue';
+import CandidateHeader from '@/components/CandidateHeader.vue';
+import CandidateInfoGrid from '@/components/CandidateInfoGrid.vue';
+import CandidateTabs from '@/components/CandidateTabs.vue';
+import NotesPanel from '@/components/NotesPanel.vue';
+import EditCandidateModal from '@/components/EditCandidateModal.vue';
 
-// Sample jobs list
-const jobsList = [
-  { id: 1, title: 'Senior Product Manager', assignedStatus: 'Assigned' },
-  { id: 2, title: 'Senior Product Manager', assignedStatus: 'Assigned' },
-  { id: 3, title: 'Senior Product Manager', assignedStatus: 'Assigned' }
-]
+const candidateStore = useCandidateStore();
+const { details: candidate, loading } = storeToRefs(candidateStore);
+const isEditModalVisible = ref(false);
 
 onMounted(() => {
-  candidateStore.loadCandidate()
-})
+  candidateStore.loadCandidate();
+});
+
+const handleEdit = () => {
+  isEditModalVisible.value = true;
+};
 </script>
 
 <template>
   <div class="candidate-details-view">
-    <div v-if="loading" class="loading-text">Loading candidate details...</div>
-
+    <div v-if="loading" class="loading-indicator">Loading candidate details...</div>
+    <!-- checks if the page is loading what things should come out -->
     <div v-if="!loading && candidate">
-      <CandidateHeader :candidate="candidate" />
-      <CandidateInfoGrid :candidate="candidate" />
-
-      <div v-if="activeTab === 'jobs'">
-        <AssignedJobsTable :jobs="jobsList" />
+      <div class="details-layout">
+        <div class="main-content">
+          <div class="header-container-card">
+            <SubHeader />
+            <CandidateHeader :candidate="candidate" @edit="handleEdit" />
+          </div>
+          <CandidateInfoGrid :candidate="candidate" />
+          <CandidateTabs />
+        </div>
+        <aside class="sidebar-content">
+          <NotesPanel />
+        </aside>
       </div>
-      <NotesPanel />
     </div>
   </div>
+
+  <EditCandidateModal
+    v-if="isEditModalVisible && candidate"
+    :candidate="candidate"
+    @close="isEditModalVisible = false"
+  />
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/scss/_variables.scss';
+
 .candidate-details-view {
-  padding: 2rem 3rem;
-  background: #f5f7fa;
-  min-height: 100vh;
+  gap: 1px;
+  width: 100%;
 }
-.loading-text {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #555;
+
+.details-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex; /* Added to allow children to stack properly */
+  flex-direction: column;
+  gap: 1px;
+}
+
+.header-container-card {
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-border;
+  padding: 1rem 1.5rem;
+}
+
+.sidebar-content {
+  width: 420px;
+  flex-shrink: 0;
 }
 </style>
-
-
-
-
-
-

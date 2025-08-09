@@ -1,118 +1,103 @@
 <template>
-  <div class="candidate-info-grid">
-    <div class="row">
-      <div class="cell">
-        <span class="label">Current Organization</span>
-        <span class="value">{{ candidate.currentOrganization }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Summary</span>
-        <span class="value">{{ candidate.summary }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Skills</span>
-        <span class="value">{{ candidate.skills?.join(', ') }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Current Employment Status</span>
-        <span class="value">{{ candidate.currentEmploymentStatus }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Available From</span>
-        <span class="value">{{ candidate.availableFrom }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Date of Birth</span>
-        <span class="value">{{ candidate.dateOfBirth }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Current Salary</span>
-        <span class="value">{{ candidate.currentSalary }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Relevant Experience</span>
-        <span class="value">{{ candidate.relevantExperience }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Notice Period</span>
-        <span class="value">{{ candidate.noticePeriod }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Salary Expectation</span>
-        <span class="value">{{ candidate.salaryExpectation }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Full Address</span>
-        <span class="value">{{ candidate.fullAddress }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Status</span>
-        <span class="value">{{ candidate.status }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Resume</span>
-        <span class="value">{{ candidate.resume }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Salary Type</span>
-        <span class="value">{{ candidate.salaryType }}</span>
-      </div>
-    </div>
-    <div class="row">
-      <div class="cell">
-        <span class="label">Total Experience</span>
-        <span class="value">{{ candidate.totalExperience }}</span>
-      </div>
-      <div class="cell">
-        <span class="label">Language Skills</span>
-        <span class="value">{{ candidate.languageSkills }}</span>
+  <div class="info-card">
+    <div class="info-grid">
+      <div class="info-item" v-for="field in fields" :key="field.label">
+        <label>{{ field.label }}</label>
+        
+        <div v-if="field.label === 'Skills'" class="skills-container">
+          <span v-for="skill in field.value" :key="skill" class="skill-tag">
+            {{ skill }}
+          </span>
+        </div>
+        
+        <p v-else class="value">{{ field.value }}</p>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-const props = defineProps();
-const candidate = props.candidate || {};
+<script setup lang="ts">
+import { computed } from 'vue';
+import type { Candidate } from '@/types';
+
+const props = defineProps<{
+  candidate: Candidate
+}>();
+
+// Create a single, flat array of all fields to display
+const fields = computed(() => {
+  if (!props.candidate) return [];
+  
+  // We filter out any fields that don't have a value to avoid empty rows
+  return [
+    { label: 'Current Organization', value: props.candidate.currentOrganization },
+    { label: 'Summary', value: props.candidate.summary },
+    { label: 'Skills', value: props.candidate.skills },
+    { label: 'Current Employment Status', value: props.candidate.currentEmploymentStatus },
+    { label: 'Available From', value: props.candidate.availableFrom },
+    { label: 'Date of Birth', value: props.candidate.dateOfBirth },
+    { label: 'Current Salary', value: props.candidate.currentSalary },
+    { label: 'Relevant Experience', value: props.candidate.relevantExperience },
+    { label: 'Notice Period', value: props.candidate.noticePeriod },
+    { label: 'Salary Expectation', value: props.candidate.salaryExpectation },
+    { label: 'Full Address', value: props.candidate.fullAddress },
+    { label: 'Status', value: props.candidate.status },
+    { label: 'Resume', value: props.candidate.resume },
+    { label: 'Salary Type', value: props.candidate.salaryType },
+    { label: 'Total Experience', value: props.candidate.totalExperience },
+    { label: 'Language Skills', value: props.candidate.languageSkills },
+  ].filter(field => field.value && field.value.length > 0);
+});
 </script>
 
-<style scoped>
-.candidate-info-grid {
-  background: #fff;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-  border: 1px solid #e0e8ef;
-  padding: 2rem 1.5rem;
-  width: 100%;
+<style lang="scss" scoped>
+@import '@/assets/scss/_variables.scss';
+
+.info-card {
+  background-color: $color-white;
+  padding: 1.5rem;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-border;
 }
-.row {
+
+.info-grid {
+  display: grid;
+  // This creates the two main columns for the page layout
+  grid-template-columns: 1fr 1fr;
+  // This creates the space between the rows and columns
+  gap: 1.5rem 3rem;
+}
+
+.info-item {
+  // Each item is a flex container with a vertical layout
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  gap: 0.5rem; // Space between label and value
 }
-.cell {
-  width: 48%;
+
+label {
+  font-size: 0.875rem;
+  color: $color-text-secondary;
 }
-.label {
-  font-weight: 600;
-  color: #24292f;
-  margin-right: 0.5rem;
-}
+
 .value {
-  color: #57606a;
+  margin: 0;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+    
+.skill-tag {
+  background-color: $color-background-light;
+  border: 1px solid $color-border;
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 </style>
-
